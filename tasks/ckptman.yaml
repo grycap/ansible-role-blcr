@@ -1,6 +1,6 @@
     - file: path=/opt/tmp state=directory
     
-	# install ckptman dependences
+    # install ckptman dependences
     - name: install iso8601 library to process the timestamps of EC2
       pip: name=iso8601
 
