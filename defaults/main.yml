@@ -2,3 +2,5 @@
 # Type of node to install: front or wn
 blcr_type_of_node: "front"
 blcr_install_awscli: "no"
+blcr_install_ckptman: "no"
+epilog_file: "epilog_controller"

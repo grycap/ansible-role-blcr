@@ -1,0 +1,32 @@
+    - file: path=/opt/tmp state=directory
+    
+	# install ckptman dependences
+    - name: install iso8601 library to process the timestamps of EC2
+      pip: name=iso8601
+
+    - name: prepare epilog files
+      file: path=/usr/local/slurm state=directory owner=slurm group=slurm
+    - copy:
+        dest: /usr/local/slurm/epilog_controller
+        content: "{{epilog_file}}"
+        mode: 0755
+        owner: slurm
+        group: slurm
+
+    - lineinfile: dest=/usr/local/etc/slurm.conf regexp='^Epilog=' line='Epilog=/usr/local/slurm/epilog_controller' state=present
+    - shell: scontrol reconfig
+
+    # download ckptman
+    - name: obtain the ckptman code
+      git: repo=https://github.com/amcaar/ckptman.git dest=/usr/local/ckptman version=master
+
+    # ckptman installation
+    - file: path=/usr/local/ckptman/ckptman mode=0755
+    - file: path=/usr/local/ckptman/launcher mode=0755
+    - file: path=/usr/local/ckptman/ckptman_daemon.py mode=0755
+    - file: src=/usr/local/ckptman/ckptman dest=/etc/init.d/ckptman state=link
+
+    # Start ckptman service
+    - command: ./launcher chdir=/usr/local/ckptman creates=/usr/local/ckptman/log
+      async: 120
+      poll: 0

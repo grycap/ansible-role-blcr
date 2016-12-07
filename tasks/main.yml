@@ -45,3 +45,7 @@
     - name: Include awscli if necessary
       include: "awscli.yml"
       when: blcr_install_awscli == "yes"
+
+    - name: Include ckptman if necessary
+      include: "ckptman.yaml"
+      when: blcr_install_ckptman == "yes"
