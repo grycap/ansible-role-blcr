@@ -16,8 +16,13 @@
     - name: create a folder where compile the code of BLCR
       file: path=/opt/tmp/blcr/builddir state=directory
 
-    - name: install all dependences of BLCR
+    - name: install all dependences of BLCR in Deb systems
       apt: name=make,gcc,linux-headers-{{KERNEL_RELEASE.stdout}} update_cache=yes cache_valid_time=3600
+      when: ansible_os_family == "Debian"
+   
+    - name: install all dependences of BLCR in RedHat systems
+      yum: pkg=make,gcc,linux-headers-{{KERNEL_RELEASE.stdout}} update_cache=yes
+      when: ansible_os_family == "RedHat"
 
     - name: configure blcr
       shell: ../configure chdir=/opt/tmp/blcr/builddir creates=/opt/tmp/blcr/builddir/config.log
